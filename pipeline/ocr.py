@@ -1,7 +1,5 @@
-from email.mime import text
-
 import pytesseract
-from PIL import Image, ImageEnhance, ImageFilter
+from PIL import Image
 from pathlib import Path
 import re
 
@@ -29,8 +27,8 @@ COMPILED_PATTERNS = [
     ]
 ]
 # These patterns are designed to catch common UI elements and noise that appear in lecture slides when OCR is applied.
-def is_noise(text: str, threshold: float = 0.6) -> bool:
-    """Returns True if less than 60% of characters are normal ASCII letters/digits."""
+def is_noise(text: str, threshold: float = 0.3) -> bool:
+    """Returns True if less than 30% of characters are normal ASCII letters/digits."""
     if not text:
         return True
     normal = sum(1 for c in text if c.isalnum() or c.isspace())

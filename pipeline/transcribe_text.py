@@ -3,7 +3,7 @@ from faster_whisper import WhisperModel
 #Load the model (choices: tiny, base, small, medium, large)
 model = WhisperModel("tiny", compute_type="int8")  # fast CPU
 
-def transcriber(FILE_NAME, LANGUAGE):
+def transcriber(FILE_NAME: str, LANGUAGE: str = "en"):
 
     # Transcribe the file
     segments, _ = model.transcribe(f"{FILE_NAME}", language=f"{LANGUAGE}")
@@ -23,7 +23,6 @@ transcriber(str(video_path), "en")
 """
 
 """"
-
 # Define output path for transcription
 TRANSCRIPTION = f"{output_path}/{Path(FILE_NAME).stem}_transcription.txt"
 
