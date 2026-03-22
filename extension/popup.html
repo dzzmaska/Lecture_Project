@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lecture AI</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+
+  <div class="container">
+    <h1>Lecture AI</h1>
+
+    <label class="upload-box">
+      <input type="file" id="audioFile" accept=".mp3,audio/*">
+      <span id="fileLabel">Click or drag MP3 here</span>
+    </label>
+
+    <button id="summarizeBtn">Upload & Summarize</button>
+
+    <div id="loading" class="hidden">Processing audio...</div>
+
+    <div id="outputBox">
+      <h2>Summary</h2>
+      <p id="outputText"></p>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

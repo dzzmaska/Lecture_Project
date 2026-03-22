@@ -1,0 +1,71 @@
+body {
+  font-family: Arial, sans-serif;
+  width: 320px;
+  margin: 0;
+  background: #0f172a;
+  color: white;
+}
+
+.container {
+  padding: 15px;
+}
+
+h1 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+/* Upload box */
+.upload-box {
+  display: block;
+  border: 2px dashed #3b82f6;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  background: #1e293b;
+}
+
+.upload-box:hover {
+  background: #263449;
+}
+
+.upload-box input {
+  display: none;
+}
+
+#fileLabel {
+  font-size: 13px;
+  color: #cbd5f5;
+}
+
+button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #3b82f6;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #2563eb;
+}
+
+#outputBox {
+  margin-top: 15px;
+  background: #1e293b;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+#outputText {
+  font-size: 13px;
+}
+
+.hidden {
+  display: none;
+}

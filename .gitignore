@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# VS Code
+.vscode/
+
+# Mac / Windows junk
+.DS_Store
+Thumbs.db
+
+# Data / media (optional — depends if you want them)
+media/
+*.mp4
+*.wav
+
+# Logs
+*.log
+
+# Environment variables
+.env
