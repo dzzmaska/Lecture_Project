@@ -29,3 +29,6 @@ media/
 
 #output files
 output/*
+
+#frames
+frames/*

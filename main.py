@@ -5,7 +5,7 @@ from pipeline.extract_frames import extract_keyframes, deduplicate_frames
 from pipeline.ocr import ocr_all_frames, clean_all_results
 from pipeline.transcribe_text import transcriber
 from pipeline.chunking import chunk_text
-
+from pipeline.summarize import summarize_chunks
 
 FILE_NAME = "lecture_2.mp4" #We get this from user
 
@@ -19,6 +19,7 @@ TRANSCRIPTION = f"{OUTPUT_PATH}/{Path(FILE_NAME).stem}_transcription.txt" #optio
 TRANSCRIPTION_OCR = f"{OUTPUT_PATH}/{Path(FILE_NAME).stem}_ocr_transcription.txt" #optional
 
 def main():
+    """
     # Step 1 — Extract & deduplicate frames
     extract_keyframes(str(VIDEO_PATH), str(FRAMES_PATH), fps=0.02)
     #this function automatically deletes frames that are too similar based on hashing, 
@@ -48,9 +49,13 @@ def main():
     with open(CHUNKED, "w", encoding="utf-8") as f:
         json.dump(chunks, f, indent=2, ensure_ascii=False)
     print(f"step 5 done: text has been chunked and file was saved at {CHUNKED}")
-    
+    """
+    CHUNKED = OUTPUT_PATH / f"{Path(FILE_NAME).stem}_chunked_transcript.json"
+
     # Step 6 — summarization
     # We can summarize each chunk individually and then combine those summaries into a final structured summary of the lecture.
-    #summaries = summarize_chunks(chunks)
+    summaries = summarize_chunks(CHUNKED)
+    print("step 6 done: summarization completed")
+
 if __name__ == '__main__':
     main()
