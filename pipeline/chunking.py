@@ -28,7 +28,7 @@ def chunk_text(timeline, max_words=250, overlap_words=50):
         text = entry["text"].strip().replace("\n", " ")
         word_count = len(text.split())
 
-        # ✅ SLIDE: flush buffer and save immediately
+        # flush buffer and save immediately
         if entry["type"] == "SLIDE":
             if current_chunk:
                 chunks.append({
@@ -73,7 +73,7 @@ def chunk_text(timeline, max_words=250, overlap_words=50):
             current_chunk = overlap
             current_words = overlap_count
 
-    # ✅ save remaining SPEECH chunks
+    #save remaining SPEECH chunks
     if current_chunk:
         chunks.append({
             "start": current_chunk[0]["start"],
