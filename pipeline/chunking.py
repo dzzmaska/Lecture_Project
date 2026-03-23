@@ -1,71 +1,87 @@
-def chunk_text(timeline, max_words=500, overlap_words=100):
-    chunks = []
+def split_large_entry(entry: dict, max_words: int) -> list[dict]:
+    words = entry["text"].split()
+    if len(words) <= max_words:
+        return [entry]
+    
+    pieces = []
+    for i in range(0, len(words), max_words):
+        chunk_words = words[i:i + max_words]
+        pieces.append({
+            "start": entry["start"],
+            "end": entry["end"],
+            "type": entry["type"],
+            "text": " ".join(chunk_words)
+        })
+    return pieces
 
+
+def chunk_text(timeline, max_words=250, overlap_words=50):
+    chunks = []
     current_chunk = []
     current_words = 0
+    expanded = []
 
-    i = 0
-    while i < len(timeline):
-        entry = timeline[i]
-        text = entry["text"]
+    for entry in timeline:
+        expanded.extend(split_large_entry(entry, max_words))
+
+    for entry in expanded:
+        text = entry["text"].strip().replace("\n", " ")
         word_count = len(text.split())
 
-        # Format text based on type
-        if entry["type"] == "slide":
-            formatted_text = f"\n[SLIDE]\n{text}\n"
-        else:
-            formatted_text = f"{text}"
+        # ✅ SLIDE: flush buffer and save immediately
+        if entry["type"] == "SLIDE":
+            if current_chunk:
+                chunks.append({
+                    "start": current_chunk[0]["start"],
+                    "end": current_chunk[-1]["end"],
+                    "type": current_chunk[0]["type"],
+                    "text": " ".join(c["text"] for c in current_chunk),
+                })
+                current_chunk = []
+                current_words = 0
+            chunks.append({
+                "start": entry["start"],
+                "end": entry["end"],
+                "type": "SLIDE",
+                "text": text,
+            })
+            continue
 
+        # SPEECH: accumulate with overlap
         current_chunk.append({
-            "text": formatted_text,
             "start": entry["start"],
-            "end": entry["end"]
+            "end": entry["end"],
+            "type": entry["type"],
+            "text": text,
         })
-
         current_words += word_count
 
         if current_words >= max_words:
-            chunk_text = " ".join([c["text"] for c in current_chunk])
-
             chunks.append({
-                "text": chunk_text,
                 "start": current_chunk[0]["start"],
-                "end": current_chunk[-1]["end"]
+                "end": current_chunk[-1]["end"],
+                "type": current_chunk[0]["type"],
+                "text": " ".join(c["text"] for c in current_chunk),
             })
-
-            # Overlap logic
             overlap = []
-            overlap_words_count = 0
-
+            overlap_count = 0
             for c in reversed(current_chunk):
                 overlap.insert(0, c)
-                overlap_words_count += len(c["text"].split())
-                if overlap_words_count >= overlap_words:
+                overlap_count += len(c["text"].split())
+                if overlap_count >= overlap_words:
                     break
-
             current_chunk = overlap
-            current_words = overlap_words_count
+            current_words = overlap_count
 
-        i += 1
-
-    # last chunk
+    # ✅ save remaining SPEECH chunks
     if current_chunk:
-        chunk_text = " ".join([c["text"] for c in current_chunk])
         chunks.append({
-            "text": chunk_text,
             "start": current_chunk[0]["start"],
-            "end": current_chunk[-1]["end"]
+            "end": current_chunk[-1]["end"],
+            "type": current_chunk[0]["type"],
+            "text": " ".join(c["text"] for c in current_chunk),
         })
-    chunks = chunk_text(timeline)
+    #this is very useful to understand the average chunk size and adjust the max_words and overlap_words accordingly.
+    avg_chunk_char_count = sum(len(c["text"]) for c in chunks) / len(chunks)
 
-    for c in chunks[:2]:
-        print("TIME:", c["start"], "-", c["end"])
-        print(c["text"][:500])
-        print("="*50)
-
-    return chunks
-
-"""
-from pathlib import Path
-chunk_text(Path("output/lecture_2_merged_transcript.json"))
-"""
+    return chunks, avg_chunk_char_count

@@ -1,8 +1,11 @@
+import json
 from pipeline.align_timeline import process_video
 from pathlib import Path
 from pipeline.extract_frames import extract_keyframes, deduplicate_frames
 from pipeline.ocr import ocr_all_frames, clean_all_results
 from pipeline.transcribe_text import transcriber
+from pipeline.chunking import chunk_text
+
 
 FILE_NAME = "lecture_2.mp4" #We get this from user
 
@@ -33,10 +36,21 @@ def main():
     print("step 3 in action: audio is being transcribed")
 
     # Step 4 — align timeline of text and OCR and save
-    merged_transcript_path = process_video(cleaned_results, whisper_segments, Path(FILE_NAME).stem, OUTPUT_PATH)
+    merged_timeline_transcript = process_video(cleaned_results, whisper_segments, Path(FILE_NAME).stem, OUTPUT_PATH)
     print("step 4 done: merged transcript saved")
-    print(f"All done! Merged transcript available at: {merged_transcript_path}")
+    
+    # Step 5 — chunking
+    #We can adjust the max_words and overlap_words to find the right balance for chunk size and context retention.
+    chunks, av = chunk_text(merged_timeline_transcript)
+    print(f"Average words per chunk: {av:.2f} (Best is between 500-1000 chars)")
 
-
+    CHUNKED = OUTPUT_PATH / f"{Path(FILE_NAME).stem}_chunked_transcript.json"
+    with open(CHUNKED, "w", encoding="utf-8") as f:
+        json.dump(chunks, f, indent=2, ensure_ascii=False)
+    print(f"step 5 done: text has been chunked and file was saved at {CHUNKED}")
+    
+    # Step 6 — summarization
+    # We can summarize each chunk individually and then combine those summaries into a final structured summary of the lecture.
+    #summaries = summarize_chunks(chunks)
 if __name__ == '__main__':
     main()

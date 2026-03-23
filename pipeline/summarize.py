@@ -1,5 +1,13 @@
 from transformers import pipeline
 from pathlib import Path
+def llm(prompt):
+    # Initialize the summarization pipeline
+    summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+
+    # Generate the summary
+    summary = summarizer(prompt, max_length=150, min_length=30, do_sample=False)
+
+    return summary[0]['summary_text']
 
 def summarize_chunk(chunk_text):
     prompt = f"""

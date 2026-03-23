@@ -79,6 +79,8 @@ def clean_text(text: str) -> str:
     # Warning: This will delete lines that are genuinely just "IT" or "To". 
     # If you lose valid data, change > 2 to > 1.
     lines = [l for l in lines if len(l.strip()) > 2] 
+    # add this inside clean_text() in ocr.py
+    lines = [l for l in lines if not re.match(r'^(okay|so|now|let|the|we|i |you)', l.strip(), re.IGNORECASE)]
     
     return '\n'.join(lines).strip()
 
