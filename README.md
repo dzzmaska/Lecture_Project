@@ -24,6 +24,8 @@ Users can ask natural language questions about the video. The system retrieves t
 
 <img width="1173" height="867" alt="image" src="https://github.com/user-attachments/assets/d7d5a5f5-086c-4347-a9f9-b00b3d0d4cae" />
 
+### Important Notes: The project is not in it's final state for now
+
 ### Dependencies
 
 | Tool | Role |
