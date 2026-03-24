@@ -42,6 +42,7 @@ def deduplicate_frames(frames_dir: str, hash_threshold: int = 5):
             path.unlink()  # Remove duplicate
 
     print(f"Kept {len(kept)} / {len(frame_paths)} frames")
+    print("step 1 done: frames extracted and deduplicated")
     return kept
 
 

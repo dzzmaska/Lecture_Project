@@ -104,6 +104,7 @@ def clean_all_results(ocr_results: list[dict], fps: float) -> list[dict]:
                 'end': timestamp,
                 'text': text
             })
+    print("step 2 done: all frames cleaned")
     return cleaned
 
 #calling functions to run the whole OCR and cleaning; 

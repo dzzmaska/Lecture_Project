@@ -28,7 +28,7 @@ def chunk_text(timeline, max_words=250, overlap_words=50):
         text = entry["text"].strip().replace("\n", " ")
         word_count = len(text.split())
 
-        # ✅ SLIDE: flush buffer and save immediately
+        # SLIDE: flush buffer and save immediately
         if entry["type"] == "SLIDE":
             if current_chunk:
                 chunks.append({
@@ -73,7 +73,7 @@ def chunk_text(timeline, max_words=250, overlap_words=50):
             current_chunk = overlap
             current_words = overlap_count
 
-    # ✅ save remaining SPEECH chunks
+    # save remaining SPEECH chunks
     if current_chunk:
         chunks.append({
             "start": current_chunk[0]["start"],
@@ -83,5 +83,7 @@ def chunk_text(timeline, max_words=250, overlap_words=50):
         })
     #this is very useful to understand the average chunk size and adjust the max_words and overlap_words accordingly.
     avg_chunk_char_count = sum(len(c["text"]) for c in chunks) / len(chunks)
+    print(f"Average words per chunk: {avg_chunk_char_count:.2f} (Best is between 500-1000 chars)")
+    print(f"step 5 done: text has been chunked and file was saved")
 
     return chunks, avg_chunk_char_count

@@ -32,3 +32,11 @@ output/*
 
 #frames
 frames/*
+
+#chromadb
+chromadb/
+chromadb.db/
+chroma_db/
+
+#extensions
+extensions/

@@ -38,9 +38,10 @@ def process_video(cleaned_results: list, whisper_segments: list, FILE_NAME_STEM:
 
     #OPTIONAL
     #Save merged transcript for debugging 
-    MERGED = OUTPUT_PATH / f"{FILE_NAME_STEM}_merged_transcript.json"
+    #MERGED = OUTPUT_PATH / f"{FILE_NAME_STEM}_merged_transcript.json"
 
-    with open(MERGED, "w", encoding="utf-8") as f:
-        json.dump(timeline, f, indent=2, ensure_ascii=False)
-
+    #with open(MERGED, "w", encoding="utf-8") as f:
+        #json.dump(timeline, f, indent=2, ensure_ascii=False)
+    
+    print("step 4 done: merged transcript saved")
     return timeline  # return timeline for chunking to use

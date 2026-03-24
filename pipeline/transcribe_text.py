@@ -6,8 +6,8 @@ model = WhisperModel("tiny", compute_type="int8")  # fast CPU
 def transcriber(FILE_NAME: str, LANGUAGE: str = "en"):
 
     # Transcribe the file
+    print("step 3 in action: audio is being transcribed — this may take a while depending on the length of the video and your hardware")
     segments, _ = model.transcribe(f"{FILE_NAME}", language=f"{LANGUAGE}")
-
     return segments  # Return the segments for further processing if needed
 
 

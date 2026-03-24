@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lecture Summarizer</title>
+  <style>
+    body {
+      font-family: Georgia, serif;
+      max-width: 720px;
+      margin: 60px auto;
+      padding: 0 24px 80px;
+      background: #faf7f2;
+      color: #1a1208;
+    }
+ 
+    /* ── Masthead ── */
+    .masthead {
+      text-align: center;
+      padding-bottom: 28px;
+      margin-bottom: 40px;
+      border-bottom: 2px solid #1a1208;
+    }
+    .masthead::before {
+      content: '◆ ACADEMIC DIGEST ◆';
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      color: #8a7a6a;
+      margin-bottom: 12px;
+    }
+    .masthead h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .masthead p {
+      color: #8a7a6a;
+      font-style: italic;
+      font-size: 1rem;
+    }
+ 
+    /* ── Cards ── */
+    .card {
+      background: white;
+      border: 1px solid #d4c9b8;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 10px rgba(26,18,8,0.07);
+    }
+    .card-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #8a7a6a;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ede8df;
+    }
+ 
+    /* ── Upload row ── */
+    .upload-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .upload-file-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .upload-icon {
+      width: 42px; height: 42px;
+      background: #1a1208;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .upload-file-meta { font-size: 10px; letter-spacing: 0.15em; color: #8a7a6a; margin-bottom: 3px; }
+    #file-name { font-style: italic; font-size: 0.95rem; color: #1a1208; }
+    .upload-buttons { display: flex; gap: 10px; }
+ 
+    /* ── Buttons ── */
+    button {
+      font-family: Georgia, serif;
+      cursor: pointer;
+      font-size: 0.9rem;
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+ 
+    .btn-ghost {
+      padding: 10px 20px;
+      background: transparent;
+      border: 1px solid #1a1208;
+      color: #1a1208;
+    }
+    .btn-ghost:hover:not(:disabled) { background: #f0ebe0; }
+ 
+    .btn-solid {
+      padding: 10px 24px;
+      background: #1a1208;
+      border: 1px solid #1a1208;
+      color: #f5f0e8;
+      font-style: italic;
+    }
+    .btn-solid:hover:not(:disabled) { background: #3a2808; }
+ 
+    /* ── Status ── */
+    #status {
+      font-style: italic;
+      color: #8a7a6a;
+      font-size: 0.9rem;
+      min-height: 20px;
+      margin-bottom: 8px;
+    }
+ 
+    /* ── Output ── */
+    #output {
+      display: none;
+      white-space: pre-wrap;
+      line-height: 1.8;
+      font-size: 0.95rem;
+    }
+ 
+    /* ── Chat ── */
+    #chat-section { display: none; }
+ 
+    #chat-box {
+      background: #faf7f2;
+      border: 1px solid #d4c9b8;
+      padding: 20px;
+      height: 360px;
+      overflow-y: auto;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border-radius: 2px;
+    }
+ 
+    .chat-input-row { display: flex; gap: 8px; }
+ 
+    #chat-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid #d4c9b8;
+      font-family: Georgia, serif;
+      font-size: 0.95rem;
+      background: white;
+      outline: none;
+      border-radius: 2px;
+      transition: border-color 0.2s;
+    }
+    #chat-input:focus { border-color: #c8862a; }
+ 
+    /* ── Ornament ── */
+    .ornament {
+      text-align: center;
+      color: #c8862a;
+      font-size: 13px;
+      letter-spacing: 0.4em;
+      margin: 32px 0;
+    }
+  </style>
+</head>
+<body>
+ 
+  <!-- Masthead -->
+  <div class="masthead">
+    <h1>Lecture Summarizer</h1>
+    <p>Upload a lecture and get a structured summary</p>
+  </div>
+ 
+  <!-- Upload card -->
+  <div class="card">
+    <div class="card-label">Upload lecture video</div>
+    <input type="file" id="fileInput" accept=".mp4" style="display:none"
+      onchange="updateFileName(this)" />
+    <div class="upload-row">
+      <div class="upload-file-info">
+        <div class="upload-icon">🎬</div>
+        <div>
+          <div class="upload-file-meta">MP4 FILE</div>
+          <div id="file-name">No file selected</div>
+        </div>
+      </div>
+      <div class="upload-buttons">
+        <button class="btn-ghost" onclick="document.getElementById('fileInput').click()">Choose File</button>
+        <button class="btn-solid" id="btn" onclick="upload()">Summarize Lecture</button>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- Status -->
+  <div id="status"></div>
+ 
+  <!-- Summary output -->
+  <div class="card" id="output-card" style="display:none;">
+    <div class="card-label">Generated summary</div>
+    <div id="output"></div>
+  </div>
+ 
+  <!-- Divider -->
+  <div class="ornament" id="ornament" style="display:none;">— ✦ —</div>
+ 
+  <!-- Chat section -->
+  <div id="chat-section">
+    <div class="card">
+      <div class="card-label">Ask about the lecture</div>
+      <div id="chat-box"></div>
+      <div class="chat-input-row">
+        <input id="chat-input" type="text"
+          placeholder="Ask a question about the lecture…"
+          onkeydown="if(event.key==='Enter') sendMessage()" />
+        <button class="btn-solid" id="send-btn" onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+ 
+  <script>
+    let chatHistory = [];
+ 
+    function updateFileName(input) {
+      const name = input.files[0]?.name || "No file selected";
+      document.getElementById("file-name").textContent = name;
+    }
+ 
+    function showChat() {
+      document.getElementById("chat-section").style.display = "block";
+      document.getElementById("ornament").style.display = "block";
+    }
+ 
+    function appendMessage(role, text) {
+      const box = document.getElementById("chat-box");
+      const msg = document.createElement("div");
+      msg.style.cssText = `
+        max-width: 85%;
+        padding: 10px 14px;
+        line-height: 1.6;
+        font-size: 0.92rem;
+        border-radius: 2px;
+        ${role === "user"
+          ? "align-self: flex-end; background: #1a1208; color: #f5f0e8;"
+          : "align-self: flex-start; background: white; color: #1a1208; border: 1px solid #d4c9b8;"}
+      `;
+      msg.textContent = text;
+      box.appendChild(msg);
+      box.scrollTop = box.scrollHeight;
+    }
+ 
+    async function sendMessage() {
+      const input = document.getElementById("chat-input");
+      const message = input.value.trim();
+      if (!message) return;
+ 
+      input.value = "";
+      document.getElementById("send-btn").disabled = true;
+      appendMessage("user", message);
+ 
+      appendMessage("assistant", "Thinking…");
+      const box = document.getElementById("chat-box");
+      const thinking = box.lastChild;
+ 
+      try {
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message, history: chatHistory })
+        });
+        const data = await res.json();
+        thinking.remove();
+        appendMessage("assistant", data.reply);
+        chatHistory.push({ role: "user", content: message });
+        chatHistory.push({ role: "assistant", content: data.reply });
+      } catch (e) {
+        thinking.textContent = "Error: " + e.message;
+      } finally {
+        document.getElementById("send-btn").disabled = false;
+        input.focus();
+      }
+    }
+ 
+    async function upload() {
+      const file = document.getElementById("fileInput").files[0];
+      if (!file) return alert("Please select an .mp4 file.");
+ 
+      const btn = document.getElementById("btn");
+      const status = document.getElementById("status");
+      const outputCard = document.getElementById("output-card");
+      const output = document.getElementById("output");
+ 
+      btn.disabled = true;
+      outputCard.style.display = "none";
+      status.textContent = "Uploading and processing… this may take a few minutes.";
+ 
+      const form = new FormData();
+      form.append("file", file);
+ 
+      try {
+        const res = await fetch("/summarize", { method: "POST", body: form });
+        const data = await res.json();
+        console.log("FULL RESPONSE:", data);        // ← add this
+        console.log("SUMMARY VALUE:", data.summary); // ← and this
+
+        if (!res.ok) throw new Error(data.detail || "Unknown error");
+ 
+        status.textContent = "Done!";
+        outputCard.style.display = "block";
+        output.textContent = typeof data.summary === "string"
+          ? data.summary
+          : JSON.stringify(data.summary, null, 2);
+ 
+        showChat();
+      } catch (e) {
+        status.textContent = "Error: " + e.message;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
+ 
+
+
