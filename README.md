@@ -19,12 +19,11 @@ Transcript chunks and OCR results are combined into a single unified text corpus
 **4. RAG system**  
 The merged corpus is chunked into overlapping segments, embedded into a vector store, and indexed for semantic retrieval.
 
-**5. Chat interface**  UNDER WORK
+**5. Chat interface**
 Users can ask natural language questions about the video. The system retrieves the most relevant chunks and generates grounded answers based on what was said and shown.
 
-<img width="1173" height="867" alt="image" src="https://github.com/user-attachments/assets/d7d5a5f5-086c-4347-a9f9-b00b3d0d4cae" />
+<img width="1406" height="1386" alt="image" src="https://github.com/user-attachments/assets/afaa2563-2542-4c73-a333-6eae24f66701" />
 
-### Important Notes: The project is not in it's final state for now
 
 ### Dependencies
 
